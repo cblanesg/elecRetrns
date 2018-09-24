@@ -24,9 +24,15 @@ for (i in 1:ncol(v)){
 dat[,sel] <- v # return votes without missing to data
 v$efec <- round(rowSums(v), 0)
 dat$efec <- v$efec
+tmp <- dat$nr # remove NAs
+tmp[is.na(tmp)] <- 0
+dat$nr <- tmp
+tmp <- as.numeric(dat$nulos)  # make numeric & remove NAs
+tmp[is.na(tmp)] <- 0
+dat$nulos <- tmp
 v$tot <- dat$efec + dat$nr + dat$nulos
 dat$tot <- v$tot
-rm(v)
+rm(v, tmp)
 
 # verify that coalition member separator is always a - 
 sel <- grep("^l[0-9]{2}", colnames(dat))
@@ -36,7 +42,7 @@ for (i in 1:ncol(l)){
     tmp <- l[,i] # duplicate column for manipulation
     #table(gsub(pattern = "([0-9a-zA-Záéíóúñ])", replacement = "", tmp)) # keep only non-letter-number characters
     tmp <- gsub(pattern = "[ ]", replacement = "", tmp)
-    tmp <- gsub(pattern = "[.]", replacement = "-", tmp)
+    tmp <- gsub(pattern = "[.,]", replacement = "-", tmp)
     #sel1 <- grep("[ ]", tmp)
     #tmp[sel1]
     l[,i] <- tmp # return to data
@@ -64,6 +70,15 @@ for (i in 1:ncol(l)){
 }
 rm(l,v)
 
+# drop upper case from labels
+sel.l <- grep("^l[0-9]{2}", colnames(dat))
+l <- dat[,sel.l] # subset labels columns
+for (i in 1:ncol(l)){
+    l[,i] <- tolower(l[,i])
+    }
+dat[,sel.l] <- l # return to data
+rm(l)
+
 # remove useless labels
 sel.l <- grep("^l[0-9]{2}", colnames(dat))
 l <- dat[,sel.l] # subset label columns
@@ -84,6 +99,12 @@ for (i in 1:ncol(l)){
     l[,i] <- gsub(pattern = "^c$|^cd$|^cdppn$|^pc$|^conver(gencia)?$", replacement = "conve", l[,i])
     l[,i] <- gsub(pattern = "-c-|-cd-|-cdppn-|-pc-|-conver(gencia)?-", replacement = "-conve-", l[,i])
     l[,i] <- gsub(pattern = "-c$|-cd$|-cdppn$|-pc$|-conver(gencia)?$", replacement = "-conve", l[,i])
+    }
+#
+for (i in 1:ncol(l)){
+    l[,i] <- gsub(pattern = "^mrn$", replacement = "morena", l[,i])
+    l[,i] <- gsub(pattern = "-mrn-", replacement = "-morena-", l[,i])
+    l[,i] <- gsub(pattern = "-mrn$", replacement = "-morena", l[,i])
     }
 #
 for (i in 1:ncol(l)){
@@ -172,6 +193,13 @@ for (i in 1:ncol(l)){
     l[,i] <- gsub(pattern = "-panal-", replacement = "-pna-", l[,i])
     l[,i] <- gsub(pattern = "-panal$", replacement = "-pna", l[,i])
     l[,i] <- gsub(pattern = "^panal-", replacement = "pna-", l[,i])
+    }
+#
+for (i in 1:ncol(l)){
+    l[,i] <- gsub(pattern = "^na$", replacement = "pna", l[,i])
+    l[,i] <- gsub(pattern = "-na-", replacement = "-pna-", l[,i])
+    l[,i] <- gsub(pattern = "-na$", replacement = "-pna", l[,i])
+    l[,i] <- gsub(pattern = "^na-", replacement = "pna-", l[,i])
     }
 #
 for (i in 1:ncol(l)){
@@ -265,7 +293,16 @@ for (i in 1:ncol(l)){
     l[,i] <- gsub(pattern = "^alianza-", replacement = "alianza1-", l[,i])
     }
 #
-#table(l[,2])
+for (i in 1:ncol(l)){
+    l[,i] <- gsub(pattern = "^es$", replacement = "pes", l[,i])
+    l[,i] <- gsub(pattern = "-es-", replacement = "-pes-", l[,i])
+    l[,i] <- gsub(pattern = "-es$", replacement = "-pes", l[,i])
+    l[,i] <- gsub(pattern = "^es-", replacement = "pes-", l[,i])
+    }
+#
+#
+sel.r <- which(dat$yr>2006)
+#table(l[sel.r,18]) # easier to verify one column at a time
 dat[,sel.l] <- l # return to data
 rm(l)
 
@@ -639,8 +676,11 @@ sortBy <- function(target, By){
 # sort coalition-aggregated data
 tail(cv)
 tail(cl)
+###########################################
 cv.sorted <- sortBy(target = cv, By = cv) # slow!
+###########################################
 cl.sorted <- sortBy(target = cl, By = cv) # slow!
+###########################################
 cv.sorted <- as.data.frame(cv.sorted, stringsAsFactors = FALSE) # return matrix to dataframe
 cl.sorted <- as.data.frame(cl.sorted, stringsAsFactors = FALSE) # return matrix to dataframe
 colnames(cv.sorted) <- colnames(v); colnames(cl.sorted) <- colnames(l)
@@ -661,8 +701,8 @@ dat <- dat[, c(1:(tmp1-1), tmp2, tmp1:(tmp2-1))]
 colnames(dat)
 rm(cv, cl, cv.sorted, cl.sorted, sel.l, sel.v, v, l, tmp)
 
-table(dat$v14) # check that only has zeroes
-dat$v14 <- dat$l14 <- dat$v15 <- dat$l15 <- dat$v16 <- dat$l16 <- dat$v17 <- dat$l17 <- dat$v18 <- dat$l18 <- NULL # redundant columns
+table(dat$v15) # check that only has zeroes
+dat$v15 <- dat$l15 <- dat$v16 <- dat$l16 <- dat$v17 <- dat$l17 <- dat$v18 <- dat$l18 <- NULL # redundant columns
 dat$win <- dat$l01
 # move win column before v01
 tmp <- dat # duplicate if I mess up
@@ -729,6 +769,29 @@ compare this to pancoal etc columns
 
 
 
+###########################
+# ESTO ANALIZA INCUMBENTS #
+###########################
+
+dd <- "/home/eric/Desktop/MXelsCalendGovt/elecReturns/data/"
+setwd(dd)
+
+# read raw data file
+inc <- read.csv(file = "aymu1985-present.incumbents.csv", stringsAsFactors = FALSE)
+dim(inc)
+colnames(inc)
+
+sel <- which(inc$edon==24)
+tmp <- inc[sel,]
+
+table(tmp$reelec.post)
+
+
+i <- 0
+
+i <- i+1
+sel <- which(tmp$munn==i)
+tmp[sel, c("yr","incumbent","dreran.post","dreelec.post")]
 
 
 

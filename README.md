@@ -1,16 +1,16 @@
 
 # Table of Contents
 
-1.  [Description of *Recent Mexican Election Vote Returns* repository](#orgdd3d545)
-2.  [Files in the repository and how to cite them](#org206417e)
-3.  [Codebook](#orgb823f46)
-4.  [Sources](#org779907a)
-5.  [Acknowledgements](#org2b3f26b)
+1.  [Description of *Recent Mexican Election Vote Returns* repository](#orgfb663a6)
+2.  [Files in the repository and how to cite them](#org845ca5d)
+3.  [Codebook](#org1ea53ef)
+4.  [Sources](#orgc2488b5)
+5.  [Acknowledgements](#org9e6918a)
 
 Last revision: 2018-03-08
 
 
-<a id="orgdd3d545"></a>
+<a id="orgfb663a6"></a>
 
 # Description of *Recent Mexican Election Vote Returns* repository
 
@@ -19,10 +19,10 @@ Last revision: 2018-03-08
 
 The repository contains voting data for recent Mexican elections for certain offices at different levels of aggregation. Data has been compiled from many sources. More recent years tend to be coded from official vote returns. Earlier elections tend to be from secondary sources (see Souces section). Data inludes district-level federal deputy vote returns since 1979 and district-level presidential vote returns since 2006; and municipality-level municipal president vote returns (except in the state of Nayarit, votes cast for municipal president also elect a municipal council in a fused ballot). 
 
-*Important note:* this repository contains LFS (Large File System) parts. Make sure to install [LFS](https://git-lfs.github.com/) in your machine before cloning the repository.
+*Important note:* older incarnations of this this repository contain LFS (Large File System) parts. Make sure to install [LFS](https://git-lfs.github.com/) in your machine before cloning previous commits of the repository.
 
 
-<a id="org206417e"></a>
+<a id="org845ca5d"></a>
 
 # Files in the repository and how to cite them
 
@@ -37,6 +37,8 @@ In general, file names identify the office elected (i.e., **df**, **se**, **pr**
 -   `code/ayClean.r` = script used to clean *ayuntamiento* returns, should be unnecessary unless new data are added because output has been saved into csv file.
 -   `data/dfdf1979-on.csv`
     -   **Citation for this dataset**: Eric Magar, Alejandro Trelles, Micah Altman, and Michael P. McDonald (2017) Components of partisan bias originating from single-member districts in multi-party systems: An application to Mexico, *Political Geography* 57(1):1-12.
+-   `data/dfdfcandidates2015-on.csv` = names of all federal deputy candidates in districts and party lists since 2015.
+-   `data/seedcandidates2018.csv` = names of all senatorial candidates in states and party lists in 2018.
 -   `data/goed1961-on.csv` = updated to 2010
     -   **Citation for this dataset**: Eric Magar (2012) Gubernatorial Coattails in Mexican Congressional Elections, *The Journal of Politics* 74(2):383-399.
 -   `data/prdf2006-on.csv`
@@ -44,7 +46,7 @@ In general, file names identify the office elected (i.e., **df**, **se**, **pr**
 -   <del>`datosBrutos/` = large directory containing primary sources</del> (dropped from repo due to large size&#x2026; [mail me](mailto:emagar@itam.mx) if you need this).
 
 
-<a id="orgb823f46"></a>
+<a id="org1ea53ef"></a>
 
 # Codebook
 
@@ -80,7 +82,7 @@ Most variables are included in every file, some appear in selected files only.
 -   *fake* = indicates fake data for hegemonic era elections, made up of best guesses about what happened in the state's race for the purpose of computing vote lags. Will normally be dropped from analysis.
 
 
-<a id="org779907a"></a>
+<a id="orgc2488b5"></a>
 
 # Sources
 
@@ -95,7 +97,7 @@ Work in progress&#x2026;
 -   *Fuente* = voz y voto
 
 
-<a id="org2b3f26b"></a>
+<a id="org9e6918a"></a>
 
 # Acknowledgements
 

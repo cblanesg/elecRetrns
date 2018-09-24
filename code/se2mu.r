@@ -1,27 +1,29 @@
 setwd("/home/eric/Desktop/MXelsCalendGovt/elecReturns/datosBrutos/")
 
-file <- "que2015ayca.csv"
-d <- read.csv(file = file, stringsAsFactors = FALSE)
-
+file <- "zac2018ayca.csv"
+d <- read.csv(file = file, stringsAsFactors = FALSE, fileEncoding="utf-8")
 
 colnames(d)
 str(d)
 d[1,]
 
 # make numeric
-v <- d[,c(7:44)]
+sel <- grep("v[.]*|nr|nul", colnames(d))
+sel <- c(8:38)
+v <- d[,sel]
+v[1,]
 for (i in 1:ncol(v)){
     v[,i] <- as.numeric(v[,i])
 }
 v[is.na(v)] <- 0
-
-d[,c(7:44)] <- v
+d[,sel] <- v
 
 head(d)
+str(d)
 colnames(d)
 
 # consolidate mun votes
-for (i in c(5:26,28,30,31)){
+for (i in sel){
     d[,i] <- ave(d[,i], as.factor(d$mun), FUN=sum, na.rm=TRUE)
 }
 
@@ -30,19 +32,23 @@ head(d)
 # drop redundant obs
 d <- d[duplicated(d$mun)==FALSE,]
 
-
+colnames(d)
+sel <- c(2,11,14:34)
+d <- d[,sel]
 
 d$seccion <- NULL
-d$Casilla <- NULL
-d$Estatus <- NULL
-d$Eleccion <- NULL
+d$casilla <- NULL
+d$tipo <- NULL
+d$ext <- NULL
 
 colnames(d)
 
 
 
-file2 <- "que2015aymu.csv"
+file2 <- "zac2018aymu.csv"
 write.csv(d, file = file2, row.names = FALSE)
+
+
 
 # re-read after hand cleaning
 d <- read.csv(file = file2, stringsAsFactors = FALSE)
